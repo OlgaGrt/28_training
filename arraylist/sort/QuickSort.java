@@ -19,11 +19,9 @@ public class QuickSort implements Sort {
         int rp = endIndex;
 
         while (lp < rp) {
-            // arr[lp] <= pivot
             while (c.compare(arr[lp], pivot) <= 0 && lp < rp) {
                 lp++;
             }
-            // arr[rp] >= pivot
             while (c.compare(arr[rp], pivot) >= 0 && lp < rp) {
                 rp--;
             }
