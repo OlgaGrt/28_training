@@ -11,21 +11,26 @@ import java.util.*;
  */
 public class CustomArrayList<E> implements CustomList<E> {
 
-    private int defaultCapacity = 10;
+    private final static int DEFAULT_CAPACITY = 10;
 
-    private final static Object[] empty_obj_array = {};
+    private final static Object[] EMPTY_OBJ_ARRAY = {};
 
     private Object[] obj_array;
 
     private int size = 0;
 
     public CustomArrayList() {
-        obj_array = empty_obj_array;
+        obj_array = EMPTY_OBJ_ARRAY;
     }
 
-    public CustomArrayList(int defaultCapacity) {
-        this.defaultCapacity = defaultCapacity;
-        obj_array = new Object[defaultCapacity];
+    public CustomArrayList(int initialCapacity) {
+        if (initialCapacity > 0) {
+            obj_array = new Object[initialCapacity];
+        } else if (initialCapacity == 0) {
+            obj_array = EMPTY_OBJ_ARRAY;
+        } else {
+            throw new IllegalArgumentException("Illegal Capacity: " + initialCapacity);
+        }
     }
 
     public CustomArrayList(Collection<E> collection) {
@@ -34,7 +39,7 @@ public class CustomArrayList<E> implements CustomList<E> {
 
     @Override
     public boolean add(Object element) {
-        if (obj_array.length == size) {
+        if (obj_array.length >= size) {
             obj_array = extendArraySize(obj_array);
         }
         obj_array[size] = element;
@@ -76,6 +81,9 @@ public class CustomArrayList<E> implements CustomList<E> {
 
     @Override
     public void clear() {
+        for (int i = 0; i < size; i++) {
+            obj_array[i] = null;
+        }
         size = 0;
     }
 
@@ -132,8 +140,9 @@ public class CustomArrayList<E> implements CustomList<E> {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public void sort(Comparator<? super E> c) {
-        QuickSort.sort(obj_array, c);
+        QuickSort.sort((E[]) obj_array, c);
     }
 
     @Override
@@ -141,20 +150,17 @@ public class CustomArrayList<E> implements CustomList<E> {
         return size;
     }
 
-
     private Object[] extendArraySize(Object[] arr) {
-        int prevSize = arr.length;
-        int newSize = Math.max((int) (prevSize * 1.5 + 1), defaultCapacity);
-        return Arrays.copyOf(arr, newSize);
+        return extendArraySize(arr, size + 1);
     }
 
     private Object[] extendArraySize(Object[] arr, int sizeToAdd) {
         int prevSize = arr.length;
-        int newSize = (int) (prevSize * 1.5 + 1);
-        if ((prevSize + sizeToAdd) > newSize) {
-            newSize = prevSize + sizeToAdd;
+        int addSize = prevSize += prevSize >> 1;
+        if ((prevSize + sizeToAdd) > addSize) {
+            addSize = prevSize + sizeToAdd;
         }
-        return Arrays.copyOf(arr, newSize);
+        return Arrays.copyOf(arr, addSize);
     }
 
 }

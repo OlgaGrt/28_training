@@ -1,20 +1,24 @@
 package arraylist.sort;
 
 import java.util.Comparator;
+import java.util.Random;
 
 public class QuickSort {
 
-    public static void sort(Object[] arr, Comparator c) {
-        quickSort(arr, c, 0, arr.length - 1);
+    public static <T> void sort(T[] arr, Comparator<? super T> c) {
+        quickSort(arr, 0, arr.length - 1, c);
     }
 
-    private static void quickSort(Object[] arr, Comparator c, int startIndex, int endIndex) {
+    private static <T> void quickSort(T[] arr, int startIndex, int endIndex, Comparator<? super T> c) {
 
         if (startIndex >= endIndex) {
             return;
         }
 
-        Object pivot = arr[endIndex];
+        int pivotIndex = new Random().nextInt(endIndex - startIndex) + startIndex;
+        T pivot = arr[pivotIndex];
+        swap(arr, pivotIndex, endIndex);
+
         int lp = startIndex;
         int rp = endIndex;
 
@@ -30,8 +34,8 @@ public class QuickSort {
 
         swap(arr, lp, endIndex);
 
-        quickSort(arr, c, startIndex, lp - 1);
-        quickSort(arr, c, lp + 1, endIndex);
+        quickSort(arr, startIndex, lp - 1, c);
+        quickSort(arr, lp + 1, endIndex, c);
     }
 
 

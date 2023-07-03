@@ -7,7 +7,7 @@ public interface CustomList<E> {
     boolean add(E element);
     boolean add(int index, E element);
     boolean addAll(Collection<? extends E> c);
-    void  clear();
+    void clear();
     E get(int index);
     boolean isEmpty();
     void  remove(int index);
