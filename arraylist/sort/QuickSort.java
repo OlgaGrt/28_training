@@ -2,13 +2,13 @@ package arraylist.sort;
 
 import java.util.Comparator;
 
-public class QuickSort implements Sort {
+public class QuickSort {
 
-    public void sort(Object[] arr, Comparator c) {
+    public static void sort(Object[] arr, Comparator c) {
         quickSort(arr, c, 0, arr.length - 1);
     }
 
-    private void quickSort(Object[] arr, Comparator c, int startIndex, int endIndex) {
+    private static void quickSort(Object[] arr, Comparator c, int startIndex, int endIndex) {
 
         if (startIndex >= endIndex) {
             return;

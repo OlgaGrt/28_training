@@ -13,8 +13,7 @@ public class QuickSortTest {
         Object[] arr = {9, 8, 7, 6, 5, 4, 3, 2, 1};
         Object[] expected = {1, 2, 3, 4, 5, 6, 7, 8, 9};
 
-        QuickSort quickSort = new QuickSort();
-        quickSort.sort(arr, Comparator.comparingInt(x->(Integer) x));
+        QuickSort.sort(arr, Comparator.comparingInt(x->(Integer) x));
         assertArrayEquals(expected, arr);
     }
 
@@ -23,8 +22,7 @@ public class QuickSortTest {
         Object[] arr = {1, 2, 3, 4, 5, 6, 7, 8, 9};
         Object[] expected =  {9, 8, 7, 6, 5, 4, 3, 2, 1};
 
-        QuickSort quickSort = new QuickSort();
-        quickSort.sort(arr, Comparator.comparingInt(x->(Integer) x).reversed());
+        QuickSort.sort(arr, Comparator.comparingInt(x->(Integer) x).reversed());
         assertArrayEquals(expected, arr);
     }
 
@@ -33,8 +31,7 @@ public class QuickSortTest {
         Integer[] arr = {2, 1};
         Integer[] expected = {1, 2};
 
-        QuickSort quickSort = new QuickSort();
-        quickSort.sort(arr, Comparator.comparingInt(x->(Integer) x));
+        QuickSort.sort(arr, Comparator.comparingInt(x->(Integer) x));
         assertArrayEquals(expected, arr);
     }
 
@@ -43,8 +40,7 @@ public class QuickSortTest {
         Integer[] arr = {0};
         Integer[] expected = {0};
 
-        QuickSort quickSort = new QuickSort();
-        quickSort.sort(arr, Comparator.comparingInt(x->(Integer) x));
+        QuickSort.sort(arr, Comparator.comparingInt(x->(Integer) x));
         assertArrayEquals(expected, arr);
     }
 
@@ -53,8 +49,7 @@ public class QuickSortTest {
         Integer[] arr = {};
         Integer[] expected = {};
 
-        QuickSort quickSort = new QuickSort();
-        quickSort.sort(arr, Comparator.comparingInt(x->(Integer) x));
+        QuickSort.sort(arr, Comparator.comparingInt(x->(Integer) x));
         assertArrayEquals(expected, arr);
     }
 }
