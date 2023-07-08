@@ -28,7 +28,11 @@ public class WarehouseDaoImpl implements WarehouseDao {
     private static final String SQL_UPDATE_WAREHOUSE = "UPDATE WAREHOUSES SET NAME=?, LOCATION=? WHERE WAREHOUSE_ID=?";
     private static final String SQL_INSERT_WAREHOUSE = "INSERT INTO WAREHOUSES (NAME, LOCATION) VALUES (?,?)";
     private static final String SQL_DELETE_WAREHOUSE = "DELETE FROM WAREHOUSES WHERE WAREHOUSE_ID=?";
-    private static final String SQL_SELECT_WAREHOUSE_BY_WAREHOUSE_ID = "SELECT WAREHOUSE_ID, NAME, LOCATION FROM WAREHOUSES WHERE WAREHOUSE_ID=?";
+    private static final String SQL_SELECT_WAREHOUSE_BY_WAREHOUSE_ID =
+            "SELECT w.warehouse_id, w.name, w.location, p.product_id, p.name as p_name, p.description FROM WAREHOUSES w " +
+            "LEFT JOIN product_warehouse pw on w.warehouse_id = pw.warehouse_id " +
+            "LEFT JOIN products p on p.product_id = pw.product_id " +
+            "WHERE w.WAREHOUSE_ID=?";
     private static final String SQL_SELECT_All_WAREHOUSES = "SELECT * FROM WAREHOUSES";
     private static final String SQL_SELECT_PRODUCTS_BY_WAREHOUSE_ID = "SELECT p.product_id, p.name, description FROM products p " +
             "JOIN product_warehouse pw on p.product_id = pw.warehouse_id " +
@@ -79,11 +83,20 @@ public class WarehouseDaoImpl implements WarehouseDao {
             preparedStatement.setInt(1, warehouseId);
             ResultSet resultSet = preparedStatement.executeQuery();
             Warehouse warehouse = new Warehouse();
+            List<Product> products = new ArrayList<>();
             while (resultSet.next()) {
                 String name = resultSet.getString("name");
                 PGpoint geom = (PGpoint) resultSet.getObject("location");
                 warehouse = mapWarehouse(warehouseId, name, geom);
+                if (resultSet.getString("p_name") != null) {
+                    int productId = resultSet.getInt("product_id");
+                    String productName = resultSet.getString("p_name");
+                    String description = resultSet.getString("description");
+                    Product product = mapProduct(productId, productName, description);
+                    products.add(product);
+                }
             }
+            warehouse.setProducts(products);
             return warehouse;
         } catch (Exception e) {
             throw new WarehouseDaoException(e.getMessage());
