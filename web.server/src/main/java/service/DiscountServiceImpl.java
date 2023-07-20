@@ -1,37 +1,36 @@
 package service;
 
-import dao.DiscountDao;
-import dao.DiscountDaoImpl;
+import dao.DiscountDAO;
 import model.Discount;
 
 import java.util.List;
 
 public class DiscountServiceImpl implements DiscountService {
 
-    private final DiscountDao discountDao = new DiscountDaoImpl();
+    private final DiscountDAO discountDAO = new DiscountDAO();
 
     @Override
     public List<Discount> getAllDiscounts() {
-        return discountDao.getAllDiscounts();
+        return discountDAO.getAll();
     }
 
     @Override
     public Discount getDiscount(final int discountId) {
-        return discountDao.getDiscount(discountId);
+        return discountDAO.getById(discountId);
     }
 
     @Override
     public void addDiscount(final Discount discount) {
-        discountDao.addDiscount(discount);
+        discountDAO.create(discount);
     }
 
     @Override
-    public boolean updateDiscount(final Discount discount) {
-        return discountDao.updateDiscount(discount);
+    public void updateDiscount(final Discount discount) {
+        discountDAO.update(discount);
     }
 
     @Override
-    public boolean deleteDiscount(int discountId) {
-        return discountDao.deleteDiscount(discountId);
+    public void deleteDiscount(final int discountId) {
+        discountDAO.delete(discountId);
     }
 }

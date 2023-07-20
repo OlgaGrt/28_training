@@ -11,6 +11,6 @@ public interface DiscountService {
     List<Discount> getAllDiscounts();
     Discount getDiscount(int discountId);
     void addDiscount(Discount discount);
-    boolean updateDiscount(Discount discount);
-    boolean deleteDiscount(int discountId);
+    void updateDiscount(Discount discount);
+    void deleteDiscount(int discountId);
 }

@@ -1,28 +1,36 @@
 package model;
 
-import org.postgresql.geometric.PGpoint;
+import jakarta.persistence.*;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
-public class Warehouse {
-    int warehouseId;
-    String name;
-    PGpoint point;
-    List<Product> products;
+
+@Entity(name="Warehouse")
+@Table(name = "warehouses")
+public class Warehouse extends BaseEntity {
+
+    @Column(name = "name")
+    private String name;
+
+    @Embedded
+    @AttributeOverrides({
+            @AttributeOverride(name = "x", column = @Column(name = "lat")),
+            @AttributeOverride(name = "y", column = @Column(name = "long"))
+    })
+    private Point location;
+
+
+    @ManyToMany(cascade = {
+            CascadeType.PERSIST,
+            CascadeType.MERGE
+    }, fetch = FetchType.EAGER)
+    @JoinTable(name = "product_warehouse",
+            joinColumns = @JoinColumn(name = "warehouse_id"),
+            inverseJoinColumns = @JoinColumn(name = "product_id")
+    )
+    private Set<Product> products = new HashSet<>();
 
     public Warehouse() {
-        products = new ArrayList<>();
-    }
-
-    public int getWarehouseId() {
-        return warehouseId;
-    }
-
-    public void setWarehouseId(int warehouseId) {
-        this.warehouseId = warehouseId;
     }
 
     public String getName() {
@@ -33,20 +41,32 @@ public class Warehouse {
         this.name = name;
     }
 
-    public PGpoint getPoint() {
-        return point;
+    public Point getLocation() {
+        return location;
     }
 
-    public void setPoint(PGpoint point) {
-        this.point = point;
+    public void setLocation(Point location) {
+        this.location = location;
     }
 
-    public List<Product> getProducts() {
+    public Set<Product> getProducts() {
         return products;
     }
 
-    public void setProducts(List<Product> products) {
+    public void setProducts(Set<Product> products) {
         this.products = products;
+    }
+
+    public boolean addProduct(final Product product){
+        products.add(product);
+        product.getWarehouses().add(this);
+        return true;
+    }
+
+    public boolean deleteProduct(final Product product){
+        products.remove(product);
+        product.getWarehouses().remove(this);
+        return true;
     }
 
     @Override
@@ -54,20 +74,19 @@ public class Warehouse {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Warehouse warehouse = (Warehouse) o;
-        return warehouseId == warehouse.warehouseId && Objects.equals(name, warehouse.name) && Objects.equals(point, warehouse.point);
+        return Objects.equals(name, warehouse.name) && Objects.equals(location, warehouse.location);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(warehouseId, name, point);
+        return Objects.hash(name, location);
     }
 
     @Override
     public String toString() {
         return "Warehouse{" +
-                "warehouseId=" + warehouseId +
-                ", name='" + name + '\'' +
-                ", point=" + point +
+                "name='" + name + '\'' +
+                ", location=" + location +
                 ", products=" + products +
                 '}';
     }

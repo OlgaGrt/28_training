@@ -1,23 +1,38 @@
 package model;
 
+import jakarta.persistence.*;
+
 import java.util.Objects;
 
-public class User {
-    int userId;
-    String userName;
+@Entity(name="User")
+@Table(name = "users")
+@Inheritance(strategy = InheritanceType.JOINED)
+public class User extends BaseEntity {
+
+    @Column(name = "username")
+    private String userName;
+
+    @Column(name = "password")
     String password;
+
+    @Column(name = "email")
     String email;
-    Discount discount;
+
+    @ManyToOne
+    @JoinColumn(name = "user_discount")
+    private Discount discount;
 
     public User() {
     }
 
-    public int getUserId() {
-        return userId;
+    public void addDiscountToUser(final Discount discount) {
+        this.setDiscount(discount);
+        discount.addUser(this);
     }
 
-    public void setUserId(int userId) {
-        this.userId = userId;
+    public void removeDiscountToUser(final Discount discount) {
+        this.setDiscount(null);
+        discount.removeUser(this);
     }
 
     public String getUserName() {
@@ -57,21 +72,19 @@ public class User {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
-        return userId == user.userId && Objects.equals(userName, user.userName) && Objects.equals(password, user.password) && Objects.equals(email, user.email) && Objects.equals(discount, user.discount);
+        return Objects.equals(userName, user.userName) && Objects.equals(password, user.password) && Objects.equals(email, user.email) && Objects.equals(discount, user.discount);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(userId, userName, password, email, discount);
+        return Objects.hash(userName, password, email, discount);
     }
 
     @Override
     public String toString() {
         return "User{" +
-                "userId=" + userId +
                 ", userName='" + userName + '\'' +
                 ", email='" + email + '\'' +
-                ", discount=" + discount +
                 '}';
     }
 }

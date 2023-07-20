@@ -1,28 +1,31 @@
 package service;
 
-import dao.ProductDao;
-import dao.ProductDaoImpl;
+import dao.ProductDAO;
 import model.Product;
 
 import java.util.List;
 
 public class ProductServiceImpl implements ProductService {
 
-    private final ProductDao productDao = new ProductDaoImpl();
+    private final ProductDAO productDAO = new ProductDAO();
 
-    public List<Product> getAllProduct(){
-        return productDao.getAllProduct();
+    public List<Product> getAllProduct() {
+        return productDAO.getAll();
     }
-    public Product getProduct(final int productId){
-        return productDao.getProduct(productId);
+
+    public Product getProduct(final int productId) {
+        return productDAO.getById(productId);
     }
-    public void addProduct(final Product product){
-        productDao.addProduct(product);
+
+    public void addProduct(final Product product) {
+        productDAO.create(product);
     }
-    public boolean updateProduct(final Product product){
-        return productDao.updateProduct(product);
+
+    public void updateProduct(final Product product) {
+        productDAO.update(product);
     }
-    public boolean deleteProduct(final int productId){
-        return productDao.deleteProduct(productId);
+
+    public void deleteProduct(final int productId) {
+        productDAO.delete(productId);
     }
 }

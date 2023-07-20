@@ -1,37 +1,36 @@
 package service;
 
-import dao.WarehouseDao;
-import dao.WarehouseDaoImpl;
+import dao.WarehouseDAO;
 import model.Warehouse;
 
 import java.util.List;
 
 public class WarehouseServiceImpl implements WarehouseService {
 
-    private final WarehouseDao warehouseDao = new WarehouseDaoImpl();
+    private final WarehouseDAO warehouseDAO = new WarehouseDAO();
 
     @Override
     public List<Warehouse> getAllWarehouses() {
-        return warehouseDao.getAllWarehouses();
+        return warehouseDAO.getAll();
     }
 
     @Override
     public Warehouse getWarehouse(final int warehouseId) {
-        return warehouseDao.getWarehouse(warehouseId);
+        return warehouseDAO.getById(warehouseId);
     }
 
     @Override
     public Warehouse addWarehouse(final Warehouse warehouse) {
-        return warehouseDao.addWarehouse(warehouse);
+        return warehouseDAO.create(warehouse);
     }
 
     @Override
-    public boolean updateWarehouse(final Warehouse warehouse) {
-        return warehouseDao.updateWarehouse(warehouse);
+    public void updateWarehouse(final Warehouse warehouse) {
+        warehouseDAO.update(warehouse);
     }
 
     @Override
-    public boolean deleteWarehouse(final int warehouseId) {
-        return warehouseDao.deleteWarehouse(warehouseId);
+    public void deleteWarehouse(final int warehouseId) {
+        warehouseDAO.delete(warehouseId);
     }
 }

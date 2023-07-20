@@ -1,8 +1,9 @@
-package dao;
-
+import dao.ProductDAO;
 import model.Product;
+import org.hibernate.Cache;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import service.utils.HibernateUtil;
@@ -11,10 +12,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-/* tests not by convention, just for practising and learning diff aspects of hibernate */
-public class ProductDaoImplTest {
+public class ExploreCachingTests {
 
-    static ProductDAO productDAO = new ProductDAO();
+    ProductDAO productDAO = new ProductDAO();
 
     @Before
     public void before() throws IOException {
@@ -28,17 +28,21 @@ public class ProductDaoImplTest {
 
         session.createNativeQuery(schemaSQL).executeUpdate();
         session.getTransaction().commit();
+
     }
 
     @Test
     public void test1() {
+        Session session = HibernateUtil.getSessionFactory().getCurrentSession();
+        session.beginTransaction();
 
-        Product product = new Product();
-        product.setName("name");
-        product.setDescription("descp");
-        product.setBarcode(123);
-        productDAO.getAll();
+        Product productFromDb = session.find(Product.class, 1);
+        System.out.println(productFromDb);
+        Cache secondLevelCache = session.getSessionFactory().getCache();
 
+        session.clear();
+        session.getTransaction().commit();
+
+        Assert.assertTrue(secondLevelCache.containsEntity(Product.class, 1));
     }
-
 }

@@ -11,6 +11,6 @@ public interface WarehouseService {
     List<Warehouse> getAllWarehouses();
     Warehouse getWarehouse(int warehouseId);
     Warehouse addWarehouse(Warehouse warehouse);
-    boolean updateWarehouse(Warehouse warehouse);
-    boolean deleteWarehouse(int warehouseId);
+    void updateWarehouse(Warehouse warehouse);
+    void deleteWarehouse(int warehouseId);
 }

@@ -1,26 +1,33 @@
 package model;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import jakarta.persistence.*;
+import org.hibernate.annotations.NaturalId;
 
-public class Product {
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 
-    int productId;
+import java.util.*;
+
+@Entity(name = "Product")
+@Table(name = "products")
+@Cacheable
+@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE, region = "products")
+public class Product extends BaseEntity {
+
+    @NaturalId
+    @Column(name = "barcode", nullable = false)
+    private int barcode;
+
+    @Column(name = "name")
     String name;
+
+    @Column(name = "description")
     String description;
-    List<Warehouse> warehouses;
+
+    @ManyToMany(mappedBy = "products")
+    Set<Warehouse> warehouses = new HashSet<>();
 
     public Product() {
-        warehouses = new ArrayList<>();
-    }
-
-    public int getProductId() {
-        return productId;
-    }
-
-    public void setProductId(int productId) {
-        this.productId = productId;
     }
 
     public String getName() {
@@ -39,34 +46,43 @@ public class Product {
         this.description = description;
     }
 
-    public List<Warehouse> getWarehouses() {
+    public Set<Warehouse> getWarehouses() {
         return warehouses;
     }
 
-    public void setWarehouses(List<Warehouse> warehouses) {
+    public void setWarehouses(Set<Warehouse> warehouses) {
         this.warehouses = warehouses;
     }
+
+    public int getBarcode() {
+        return barcode;
+    }
+
+    public void setBarcode(int barcode) {
+        this.barcode = barcode;
+    }
+
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Product product = (Product) o;
-        return productId == product.productId && Objects.equals(name, product.name) && Objects.equals(description, product.description);
+        return Objects.equals(name, product.name) && Objects.equals(description, product.description);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(productId, name, description);
+        return Objects.hash(name, description, warehouses);
     }
+
 
     @Override
     public String toString() {
         return "Product{" +
-                "productId=" + productId +
+                "barcode=" + barcode +
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
-                ", warehouses=" + warehouses +
                 '}';
     }
 }

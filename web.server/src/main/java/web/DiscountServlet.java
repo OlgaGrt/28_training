@@ -1,3 +1,5 @@
+package web;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.exc.PropertyBindingException;
 import exception.ProductDaoException;

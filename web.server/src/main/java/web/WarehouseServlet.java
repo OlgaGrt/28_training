@@ -1,3 +1,5 @@
+package web;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.exc.PropertyBindingException;
 import exception.ProductDaoException;
@@ -6,17 +8,17 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import model.Product;
-import service.ProductService;
-import service.ProductServiceImpl;
+import model.Warehouse;
+import service.WarehouseService;
+import service.WarehouseServiceImpl;
 
 import java.io.IOException;
 import java.io.PrintWriter;
 
-@WebServlet("/product")
-public class ProductServlet extends HttpServlet {
+@WebServlet("/warehouse")
+public class WarehouseServlet extends HttpServlet {
 
-    ProductService productService = new ProductServiceImpl();
+    WarehouseService warehouseService = new WarehouseServiceImpl();
     ObjectMapper mapper = new ObjectMapper();
 
     public void doGet(HttpServletRequest req, HttpServletResponse resp)
@@ -28,15 +30,15 @@ public class ProductServlet extends HttpServlet {
             resp.setContentType("application/json");
             resp.setCharacterEncoding("UTF-8");
             if (id == null) {
-                out.print(mapper.writeValueAsString(productService.getAllProduct()));
+                out.print(mapper.writeValueAsString(warehouseService.getAllWarehouses()));
             } else {
                 int idForGet;
                 try {
                     idForGet = Integer.parseInt(id);
-                    out.print(mapper.writeValueAsString(productService.getProduct(idForGet)));
+                    out.print(mapper.writeValueAsString(warehouseService.getWarehouse(idForGet)));
                     out.flush();
                 } catch (NumberFormatException e) {
-                    resp.sendError(400, "incorrect product id");
+                    resp.sendError(400, "incorrect warehouse id");
                 }
             }
         }
@@ -45,15 +47,15 @@ public class ProductServlet extends HttpServlet {
     public void doPost(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
         try {
-            Product product = mapper.readValue(req.getInputStream(), Product.class);
-            productService.addProduct(product);
+            Warehouse warehouse = mapper.readValue(req.getInputStream(), Warehouse.class);
+            warehouseService.addWarehouse(warehouse);
             PrintWriter out = resp.getWriter();
             resp.setContentType("application/json");
             resp.setCharacterEncoding("UTF-8");
-            out.print(product);
+            out.print(warehouse);
             out.flush();
         } catch (PropertyBindingException e) {
-            resp.sendError(400, "incorrect product");
+            resp.sendError(400, "incorrect warehouse");
         }
     }
 
@@ -68,28 +70,28 @@ public class ProductServlet extends HttpServlet {
         try {
             idForDelete = Integer.parseInt(id);
         } catch (NumberFormatException e) {
-            resp.sendError(400, "incorrect product id");
+            resp.sendError(400, "incorrect warehouse id");
             return;
         }
         try {
-            productService.deleteProduct(idForDelete);
+            warehouseService.deleteWarehouse(idForDelete);
         } catch (ProductDaoException e){
-            resp.sendError(400, "incorrect product id");
+            resp.sendError(400, "incorrect warehouse id");
         }
     }
 
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
-            Product product = mapper.readValue(req.getInputStream(), Product.class);
-            productService.updateProduct(product);
+            Warehouse warehouse = mapper.readValue(req.getInputStream(), Warehouse.class);
+            warehouseService.updateWarehouse(warehouse);
             PrintWriter out = resp.getWriter();
             resp.setContentType("application/json");
             resp.setCharacterEncoding("UTF-8");
-            out.print(product);
+            out.print(warehouse);
             out.flush();
         } catch (PropertyBindingException e) {
-            resp.sendError(400, "incorrect product");
+            resp.sendError(400, "incorrect warehouse");
         }
     }
 }

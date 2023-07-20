@@ -1,25 +1,35 @@
 package model;
 
+import jakarta.persistence.*;
+import org.hibernate.annotations.NaturalId;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class Discount {
-    int discountId;
-    String name;
-    short percent;
-    List<User> users;
+@Entity(name = "Discount")
+@Table(name = "discounts")
+public class Discount extends BaseEntity {
 
-    public Discount() {
-        users = new ArrayList<>();
+    @NaturalId
+    @Column(name = "code", nullable = false, unique = true)
+    private String code;
+
+    @Column(name = "name")
+    private String name;
+
+    @Column(name = "percent")
+    private short percent;
+
+    @OneToMany(mappedBy = "discount", cascade = CascadeType.ALL, orphanRemoval = true)
+    List<User> users = new ArrayList<>();
+
+    public String getCode() {
+        return code;
     }
 
-    public int getDiscountId() {
-        return discountId;
-    }
-
-    public void setDiscountId(int discountId) {
-        this.discountId = discountId;
+    public void setCode(String code) {
+        this.code = code;
     }
 
     public String getName() {
@@ -46,25 +56,26 @@ public class Discount {
         this.users = users;
     }
 
+    public void addUser(final User user) {
+        users.add(user);
+        user.setDiscount(this);
+    }
+
+    public void removeUser(final User user) {
+        users.remove(user);
+        user.setDiscount(null);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Discount discount = (Discount) o;
-        return discountId == discount.discountId && percent == discount.percent && Objects.equals(name, discount.name);
+        return percent == discount.percent && Objects.equals(code, discount.code) && Objects.equals(name, discount.name);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(discountId, name, percent);
-    }
-
-    @Override
-    public String toString() {
-        return "Discount{" +
-                "discountId=" + discountId +
-                ", name='" + name + '\'' +
-                ", percent=" + percent +
-                '}';
+        return Objects.hash(code, name, percent);
     }
 }
